@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.mavenproject1;
+package person.sezemsky.marek.learning.java;
 
 import java.util.Random;
 
@@ -24,39 +24,41 @@ public class RandomPersonGenerator {
         "Procházka", "Kučera", "Veselý", "Horák", "Němec",};
 
     private static final String[] FEMALE_NAMES_FIRST = {
-        "Nováková", "Svobodová", "Novotná", "Dvořáková", "Černá",
-        "Procházková", "Kučerová", "Veselá", "Horáková", "Němcová",};
-
-    private static final String[] FEMALE_NAMES_LAST = {
         "Marie", "Jana", "Eva", "Hana", "Anna",
         "Lenka", "Kateřina", "Věra", "Lucie", "Alena",};
 
+    private static final String[] FEMALE_NAMES_LAST = {
+        "Nováková", "Svobodová", "Novotná", "Dvořáková", "Černá",
+        "Procházková", "Kučerová", "Veselá", "Horáková", "Němcová",};
+
     private static final Integer MAX_AGE = 110;
-    
+
     private Random random = null;
 
     public RandomPersonGenerator() {
         random = new Random();
     }
-    
+
     public RandomPersonGenerator(long seed) {
         random = new Random(seed);
     }
-    
+
     private String getRandomName(String[] array) {
         return array[random.nextInt(array.length)];
     }
-    
+
     public Person getRandomPerson() {
-        // determine gender: 0=male, 1=female
-        int gender = random.nextInt(2);
-        
-        // return new person
+        int gender = random.nextInt(2); // genders: 0=male, 1=female
         return new Person(
-                gender > 0 ? getRandomName(FEMALE_NAMES_FIRST) : getRandomName(MALE_NAMES_FIRST),
-                gender > 0 ? getRandomName(FEMALE_NAMES_LAST) : getRandomName(MALE_NAMES_LAST),
+                gender > 0
+                        ? getRandomName(FEMALE_NAMES_FIRST)
+                        : getRandomName(MALE_NAMES_FIRST),
+                gender > 0
+                        ? getRandomName(FEMALE_NAMES_LAST)
+                        : getRandomName(MALE_NAMES_LAST),
                 random.nextInt(MAX_AGE)
         );
+        
     }
 
 }

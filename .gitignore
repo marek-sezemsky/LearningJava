@@ -1,10 +1,7 @@
 #
 # NetBeans.gitignore
 #
-
-**/nbproject/private/
-**/nbproject/Makefile-*.mk
-**/nbproject/Package-*.bash
+**/nbproject/
 build/
 nbbuild/
 dist/
