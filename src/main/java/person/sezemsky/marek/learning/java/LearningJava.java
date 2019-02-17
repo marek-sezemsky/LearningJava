@@ -3,8 +3,12 @@ package person.sezemsky.marek.learning.java;
 import com.github.tomaslanger.chalk.Chalk;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.instrument.Instrumentation;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.AnsiConsole;
@@ -16,7 +20,9 @@ public class LearningJava {
     private static final String DEFAULT_ENCODING = "UTF-8";
     private static final long DEFAULT_SEED = 42;
 
-    protected static RandomPersonGenerator rpg;
+    private static final long CZECHS = 10_000;  // 10_000_000
+
+    private static RandomPersonGenerator rpg;
 
     public LearningJava() {
     }
@@ -25,12 +31,12 @@ public class LearningJava {
         LOG.info(msg);
         System.out.println("\n\n##-- " + msg);
     }
-    
+
     public static void main(String[] args) throws UnsupportedEncodingException {
         LOG.debug("Initiating startup sequence ..");
         System.out.println(Chalk.on(
                 "\nBOOTUP Loading version 701.12 UPG").white().bold());
-        
+
         try {
             String encoding = System.getProperty("file.encoding", DEFAULT_ENCODING);
             boolean autoFlush = true;
@@ -55,7 +61,7 @@ public class LearningJava {
         LOG.debug("System ready");
         System.out.println(Chalk.on(
                 "SYSCHK DONE\nSYSTEM READY").green().bold());
-        
+
         header("Obtain generator");
         rpg = new RandomPersonGenerator(new Random(DEFAULT_SEED));
         LOG.debug("Generator: " + rpg);
@@ -67,15 +73,32 @@ public class LearningJava {
             System.out.println(String.format("%d %s", i, p));
         }
 
-        header("Generate 10 M randoms");
+        header("Generate bulk randoms");
         long startMilis = System.currentTimeMillis();
-        List<Person> czechs = rpg.getBulk(10_000_000L);
+        List<Person> czechs = rpg.getBulk(CZECHS);
         long endMilis = System.currentTimeMillis();
         System.out.println(String.format(
                 "Generated %,d entries in %,d miliseconds",
                 czechs.size(), (endMilis - startMilis)));
 
+        header("Calculating collisions");
+        Map<String, Long> map = new HashMap<String, Long>();
+        long totalCollisions = 0L;
+
+        for (Person p : czechs) {
+            String key = p.toString();
+            long timesSeen = map.getOrDefault(key, 0L);
+
+            if (timesSeen > 0) {
+                System.out.println(String.format(
+                        "Collision: Person %s already seen %d times.", p, timesSeen));
+                totalCollisions += 1;
+            }
+            map.put(key, timesSeen + 1);
+        }
+        System.out.println("Found " + totalCollisions + " collisions.")
+
         header("DONE");
+
     }
-    
 }
