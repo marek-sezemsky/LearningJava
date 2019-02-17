@@ -1,19 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package person.sezemsky.marek.learning.java;
 
 import java.util.Random;
 
 /**
- * RandomPersonGenerator processes input stream line by line and attempt to
- * parse CSV.
- *
- * @author cn880
+ * Runnable RandomPersonGenerator processes.
+ * 
  */
-public class RandomPersonGenerator {
+public class RandomPersonGenerator implements Runnable {
 
     private static final String[] MALE_NAMES_FIRST = {
         "Jiří", "Jan", "Petr", "Josef", "Pavel", "Martin",
@@ -33,14 +26,17 @@ public class RandomPersonGenerator {
 
     private static final Integer MAX_AGE = 110;
 
-    private Random random = null;
+    private Random random;
+    private long counter;
 
-    public RandomPersonGenerator() {
-        random = new Random();
+    public RandomPersonGenerator(Random random) {
+        this.random = random;
+        this.counter = 0L;
     }
 
-    public RandomPersonGenerator(long seed) {
-        random = new Random(seed);
+    public RandomPersonGenerator() {
+        this.random = new Random();
+        this.counter = 0L;
     }
 
     private String getRandomName(String[] array) {
@@ -59,6 +55,11 @@ public class RandomPersonGenerator {
                 random.nextInt(MAX_AGE)
         );
         
+    }
+
+    @Override
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
