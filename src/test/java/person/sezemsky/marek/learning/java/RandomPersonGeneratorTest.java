@@ -5,6 +5,7 @@
  */
 package person.sezemsky.marek.learning.java;
 
+import java.util.List;
 import java.util.Random;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,7 +17,10 @@ import static org.junit.Assert.*;
 
 public class RandomPersonGeneratorTest {
     
+    private RandomPersonGenerator rpg;
+    
     public RandomPersonGeneratorTest() {
+        this.rpg = new RandomPersonGenerator();
     }
     
     @BeforeClass
@@ -34,24 +38,31 @@ public class RandomPersonGeneratorTest {
     @After
     public void tearDown() {
     }
-
     
-    /**
-     * Test of getRandomPerson method, of class RandomPersonGenerator.
-     */
     @Test
-    public void test_notNull() {
+    public void testNotNull() {
         assertNotNull(new RandomPersonGenerator());
     }
     
-    
-    /**
-     * Test of getRandomPerson method with provided random generator.
-     */
     @Test
-    public void test_notNullWithRandom() {
+    public void testNotNullWithRandom() {
         assertNotNull(new RandomPersonGenerator(new Random()));
     }
+
+    @Test
+    public void testGetRandomPerson() {
+        assertNotNull(rpg.getRandomPerson());
+    }
+
+    @Test
+    public void testGetBulk() {
+        List<Person> list = rpg.getBulk(10);
+        assertEquals(10, list.size());
+        for ( Person p : list ) {
+            assertNotNull(p);
+        }
+    }
+    
     
     
 }

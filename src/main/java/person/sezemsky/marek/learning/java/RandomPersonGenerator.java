@@ -1,10 +1,13 @@
 package person.sezemsky.marek.learning.java;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.List;
 
 /**
  * Runnable RandomPersonGenerator processes.
- * 
+ *
  */
 public class RandomPersonGenerator implements Runnable {
 
@@ -54,7 +57,16 @@ public class RandomPersonGenerator implements Runnable {
                         : getRandomName(MALE_NAMES_LAST),
                 random.nextInt(MAX_AGE)
         );
-        
+
+    }
+
+    public List<Person> getBulk(long count) {
+        List<Person> list = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            list.add(getRandomPerson());
+        }
+        return list;
     }
 
     @Override
