@@ -29,17 +29,14 @@ public class RandomPersonGenerator implements Runnable {
 
     private static final Integer MAX_AGE = 110;
 
-    private Random random;
-    private long counter;
+    private final Random random;
 
     public RandomPersonGenerator(Random random) {
         this.random = random;
-        this.counter = 0L;
     }
 
     public RandomPersonGenerator() {
         this.random = new Random();
-        this.counter = 0L;
     }
 
     private String getRandomName(String[] array) {
@@ -57,7 +54,6 @@ public class RandomPersonGenerator implements Runnable {
                         : getRandomName(MALE_NAMES_LAST),
                 random.nextInt(MAX_AGE)
         );
-
     }
 
     public List<Person> getBulk(long count) {

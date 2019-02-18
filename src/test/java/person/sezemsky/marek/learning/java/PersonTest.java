@@ -68,4 +68,10 @@ public class PersonTest {
         assertEquals(expResult, p.toString());
     }
 
+    @Test
+    public void testEquals() {
+        Person p1 = new Person("First name", "Last name", 42);
+        Person p2 = new Person("First name", "Last name", 42);
+        assertTrue(p1.equals(p2));
+    }
 }

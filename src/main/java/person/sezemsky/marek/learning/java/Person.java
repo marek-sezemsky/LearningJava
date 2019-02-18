@@ -1,8 +1,9 @@
 package person.sezemsky.marek.learning.java;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-public class Person implements Serializable{
+public class Person implements Serializable {
 
     private final String firstName;
     private final String lastName;
@@ -33,7 +34,17 @@ public class Person implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj); 
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Person ) {
+            Boolean equalFirst = this.getFirstName().equals(((Person) obj).getFirstName());
+            Boolean equalLast = this.getLastName().equals(((Person) obj).getLastName());
+            Boolean equalAge = this.getAge().equals(((Person) obj).getAge());
+            
+            return (equalFirst && equalLast && equalAge);
+        }
+        return false;
     }
 
     @Override
