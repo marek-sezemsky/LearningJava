@@ -1,7 +1,6 @@
 package person.sezemsky.marek.learning.java;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 public class Person implements Serializable {
 

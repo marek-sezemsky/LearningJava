@@ -59,6 +59,7 @@ public class RandomPersonGeneratorTest {
         List<Person> list = rpg.getBulk(10);
         assertEquals(10, list.size());
         for ( Person p : list ) {
+            assertTrue(p instanceof Person);
             assertNotNull(p);
         }
     }
