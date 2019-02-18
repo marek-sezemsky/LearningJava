@@ -1,6 +1,5 @@
 package person.sezemsky.marek.learning.java;
 
-import com.github.tomaslanger.chalk.Chalk;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.instrument.Instrumentation;
@@ -12,6 +11,7 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.fusesource.jansi.AnsiConsole;
+import com.github.tomaslanger.chalk.Chalk;
 
 public class LearningJava {
 
@@ -130,7 +130,7 @@ public class LearningJava {
             }
             map.put(key, timesSeen + 1);
         }
-        System.out.println(String.format("Found %,d collisions.", totalCollisions);
+        System.out.println(String.format("Found %,d collisions.", totalCollisions));
         ph.end();
 
         totalElapsed.end();
