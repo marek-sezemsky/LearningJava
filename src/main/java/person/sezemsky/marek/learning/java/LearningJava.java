@@ -154,7 +154,7 @@ public class LearningJava {
             // TODO add some StopWatch ticker to show progress
             for (Person p : list) {
                 fw.write(p.toString());
-                fw.write('\n');
+                fw.write(System.lineSeparator());
             }
             fw.close();
             s.info("Done writing.");
