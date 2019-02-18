@@ -75,7 +75,6 @@ public class LearningJava {
             Person p = gen.getRandomPerson();
             ret.add(p);
             LOG.debug("Got " + p);
-            System.out.println(String.format("%d. %s", i + 1, p));
         }
         ph.end();
         
@@ -142,6 +141,9 @@ public class LearningJava {
 
         /* Generate 10 randoms */
         people = phaseGen10(rpg);
+        for ( Person p : people ) {
+            System.out.println(p);
+        }
 
         /* Generate big bulk of randoms */
         people = phaseGetBulkList(rpg, BULK_COUNT);
