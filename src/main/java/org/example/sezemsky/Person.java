@@ -4,11 +4,27 @@ import java.io.Serializable;
 
 public class Person implements Serializable, Cloneable, Comparable {
 
+    private static final char GENDER_M = 'M';
+    private static final char GENDER_F = 'F';
+    private static final char GENDER_X = 'X';
+
+    public enum Gender {
+        GENDER_M, GENDER_F, GENDER_X
+    };
+
+    private Gender gender;
     private String firstName;
     private String lastName;
     private Integer age;      // TODO replace with birthDate
 
     public Person() {
+    }
+
+    public Person(Gender gender, String firstName, String lastName, Integer age) {
+        this.gender = gender;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
     }
 
     public Person(String firstName, String lastName, Integer age) {
@@ -17,6 +33,11 @@ public class Person implements Serializable, Cloneable, Comparable {
         this.age = age;
     }
 
+    public Person gender(Gender g) {
+        this.gender = g;
+        return this;
+    }
+    
     public Person firstName(String firstName) {
         this.firstName = firstName;
         return this;
@@ -33,6 +54,10 @@ public class Person implements Serializable, Cloneable, Comparable {
         return this;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -40,6 +65,7 @@ public class Person implements Serializable, Cloneable, Comparable {
     public String getLastName() {
         return lastName;
     }
+
 
     public Integer getAge() {
         return age;
