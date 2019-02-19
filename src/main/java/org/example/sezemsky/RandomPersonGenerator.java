@@ -49,18 +49,19 @@ public class RandomPersonGenerator implements Runnable {
 
     public Person getRandomPerson() {
         // semi-random approach
+        Person p = null;
         int gender = random.nextInt(2);
 
         switch (gender) {  // 0=male, 1=female
             case 0:
-                return new Person(
+                p = new Person(
                         Person.Gender.GENDER_M,
                         LocalDate.now().minusYears(random.nextInt(MAX_AGE)),
                         getRandomName(MALE_NAMES_FIRST),
                         getRandomName(MALE_NAMES_LAST));
 
             case 1:
-                return new Person(
+                p = new Person(
                         Person.Gender.GENDER_F,
                         getRandomName(FEMALE_NAMES_FIRST),
                         getRandomName(FEMALE_NAMES_LAST),
@@ -69,6 +70,8 @@ public class RandomPersonGenerator implements Runnable {
             default:
                 // no X's!
         }
+        
+        return p;
     }
 
     public List<Person> getBulk(long count) {

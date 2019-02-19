@@ -9,10 +9,14 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.github.tomaslanger.chalk.Chalk;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonWriter;
 
 public class LearningJava {
 
@@ -165,6 +169,36 @@ public class LearningJava {
         s.end();
     }
 
+    private static void phaseWriteJSON(List<Person> people, String fileName) {
+        Stage s = new Stage("WRTJSN", "Write records into JSON file");
+
+        try {
+            FileWriter fw = new FileWriter(fileName);
+            // TODO add some StopWatch ticker to show progress
+            fw.write("{");
+            fw.write(System.lineSeparator());
+            for (int i = 0; i < people.size(); i++) {
+                if (i == 0) {
+                    fw.write(",");
+                    fw.write(System.lineSeparator());
+                }
+                fw.write(people.get(i).toString());
+                if ( i < people.size()-2) {
+                    fw.write(",");
+                    fw.write(System.lineSeparator());
+                }
+            }
+            fw.write("}");
+            fw.write(System.lineSeparator());
+            fw.close();
+            s.info("Done writing.");
+        } catch (IOException e) {
+            LOG.error("Failed to write JSON file", e);
+        }
+
+        s.end();
+    }
+
     public static void main(String[] args) throws UnsupportedEncodingException {
         RandomPersonGenerator rpg;
         List<Person> people;
@@ -185,9 +219,11 @@ public class LearningJava {
         phaseCalculateCollisions(people);
 
         /* Save bulk generated entries */
-        String fileName = Paths.get("./target/filename.txt")
-                .toAbsolutePath().normalize().toString();
-        phaseWriteText(people, fileName);
+        phaseWriteText(people, Paths.get("./target/filename.txt")
+                .toAbsolutePath().normalize().toString());
+
+        phaseWriteJSON(people, Paths.get("./target/filename.json")
+                .toAbsolutePath().normalize().toString());
 
     }
 }
