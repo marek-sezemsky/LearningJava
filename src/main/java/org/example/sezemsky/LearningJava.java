@@ -9,14 +9,10 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.github.tomaslanger.chalk.Chalk;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonWriter;
 
 public class LearningJava {
 
@@ -152,15 +148,14 @@ public class LearningJava {
     private static void phaseWriteText(List<Person> list, String fileName) {
         Stage s = new Stage("WRTTXT", "Write records into text file");
 
-        try {
-            s.info("Writing into : " + fileName);
-            FileWriter fw = new FileWriter(fileName);
+        // TODO add some StopWatch ticker to show progress
+        try (FileWriter fw = new FileWriter(fileName)) {
+            s.info("Writing text into : " + fileName);
             // TODO add some StopWatch ticker to show progress
             for (Person p : list) {
                 fw.write(p.toString());
                 fw.write(System.lineSeparator());
             }
-            fw.close();
             s.info("Done writing.");
         } catch (IOException e) {
             LOG.error("Failed to write TXT file", e);
@@ -172,25 +167,20 @@ public class LearningJava {
     private static void phaseWriteJSON(List<Person> people, String fileName) {
         Stage s = new Stage("WRTJSN", "Write records into JSON file");
 
-        try {
-            FileWriter fw = new FileWriter(fileName);
-            // TODO add some StopWatch ticker to show progress
-            fw.write("{");
+        // TODO add some StopWatch ticker to show progress
+        try (FileWriter fw = new FileWriter(fileName)) {
+            s.info("Writing JSON into : " + fileName);
+            fw.write("{");  // hey.....
             fw.write(System.lineSeparator());
             for (int i = 0; i < people.size(); i++) {
-                if (i == 0) {
-                    fw.write(",");
-                    fw.write(System.lineSeparator());
-                }
                 fw.write(people.get(i).toString());
-                if ( i < people.size()-2) {
-                    fw.write(",");
+                if (i < people.size() - 1) {
+                    fw.write(","); // ...psst....
                     fw.write(System.lineSeparator());
                 }
             }
-            fw.write("}");
+            fw.write("}"); // ...wanna do something nasty with JSON?
             fw.write(System.lineSeparator());
-            fw.close();
             s.info("Done writing.");
         } catch (IOException e) {
             LOG.error("Failed to write JSON file", e);
