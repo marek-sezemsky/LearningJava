@@ -1,5 +1,6 @@
 package org.example.sezemsky;
 
+import java.time.LocalDate;
 import org.example.sezemsky.Person.Gender;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,6 +48,18 @@ public class PersonTest {
     }
 
     /**
+     * Test of birthday methods of class Person.
+     */
+    @Test
+    public void testBirthDay() {
+        String F = "firstName";
+        String L = "lastName";
+        
+        Person tb = new Person().birthDate(LocalDate.now().minusYears(42));
+        assertEquals(42, (long) tb.getAge());  // @Deprecated
+    }
+
+    /**
      * Test of getFirstName method, of class Person.
      */
     @Test
@@ -75,8 +88,7 @@ public class PersonTest {
      */
     @Test
     public void testToString() {
-        String expResult = "Person{John Doe (42)}";
-        assertEquals(expResult, p.toString());
+        assertEquals("Person{John Doe (42)}", p.toString());
     }
 
     @Test
