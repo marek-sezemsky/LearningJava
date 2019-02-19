@@ -1,6 +1,5 @@
 package person.sezemsky.marek.learning.java;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
@@ -43,7 +42,12 @@ public class RandomPersonGenerator implements Runnable {
         return array[random.nextInt(array.length)];
     }
 
+    public Person genTrulyRandomPerson() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     public Person getRandomPerson() {
+        // semi-random approach
         int gender = random.nextInt(2); // genders: 0=male, 1=female
         return new Person(
                 gender > 0
@@ -67,7 +71,7 @@ public class RandomPersonGenerator implements Runnable {
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

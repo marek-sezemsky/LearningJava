@@ -9,7 +9,9 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.github.tomaslanger.chalk.Chalk;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class LearningJava {
@@ -19,39 +21,68 @@ public class LearningJava {
     private static final long BULK_COUNT = 500_000;
     private static final String ENCODING_DEFAULT = "UTF-8";
 
-    static class Phase {
+    static class Stage {
 
         private final String key;
         private final String title;
         private final long start;
 
-        public Phase(String key, String title) {
+        public Stage(String key, String title) {
             this.key = key;
             this.title = title;
             this.start = System.currentTimeMillis();
 
-            String msg = String.format("*** %s INIT %s", key, title);
+            String msg = String.format(
+                    ">>> %s INIT %s",
+                    this.key, this.title);
 
             LOG.debug(msg);
-            System.out.println(Chalk.on(msg).bold().white());
+            System.out.println();
+            System.out.println(Chalk.on(msg).yellow());
+        }
+
+        public void info(String msg) {
+            LOG.info(msg);
+            System.out.println(Chalk.on(msg).white());
+        }
+
+        public void error(String msg, Throwable t) {
+            LOG.error(msg, t);  // lolwut
+            System.out.println(Chalk.on("!X! FUCKUP --- " + t).red());
         }
 
         public void end() {
             long duration = System.currentTimeMillis() - this.start;
 
             String msg = String.format(
-                    "*** %s DONE in %,d [ms] : %s",
+                    "<<< %s DONE in %,d [ms] : %s",
                     this.key, duration, this.title);
 
             LOG.debug(msg);
-            System.out.println(Chalk.on(msg).bold().green());
+            System.out.println(Chalk.on(msg).yellow());
             System.out.println();
         }
 
     }
 
+    private static void phaseSystemInit() {
+        Stage s = new Stage("BOOTUP", "System bootup sequence");
+
+        try {
+            Chalk.setColorEnabled(true);
+            String encoding = System.getProperty("file.encoding", ENCODING_DEFAULT);
+            boolean autoFlush = true;
+            s.info("Set System.out encoding to " + encoding);
+            System.setOut(new PrintStream(System.out, autoFlush, encoding));
+        } catch (RuntimeException | UnsupportedEncodingException e) {
+            s.error("LOLWUT?!", e);
+        }
+
+        s.end();
+    }
+
     private static void phaseSystemCheck() {
-        Phase ph = new Phase("SYSSTS", "System status");
+        Stage s = new Stage("SYSSTS", "System status");
 
         Runtime rt = Runtime.getRuntime();
         String msg = String.format(
@@ -64,33 +95,34 @@ public class LearningJava {
         LOG.debug(msg);
         System.out.println(msg);
 
-        ph.end();
+        s.end();
     }
 
     private static List<Person> phaseGen10(RandomPersonGenerator gen) {
-        Phase ph = new Phase("GEN10R", "Generate 10 random persons");
-        List<Person> ret = new ArrayList<>();
+        Stage s = new Stage("GEN10R", "Generate 10 random persons");
+        List<Person> list = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
             Person p = gen.getRandomPerson();
-            ret.add(p);
-            LOG.debug("Got " + p);
+            list.add(p);
+            s.info("Created: " + p);
         }
-        ph.end();
-        
-        return ret;
+
+        s.end();
+        return list;
     }
 
     private static List<Person> phaseGetBulkList(RandomPersonGenerator gen, long count) {
-        Phase ph = new Phase("GENBLK", String.format("Generate %,d randoms in bulk", count));
-        List<Person> ret = gen.getBulk(count);
-        ph.end();
+        Stage s = new Stage("GENBLK", String.format("Generate %,d randoms in bulk", count));
 
-        return ret;
+        List<Person> list = gen.getBulk(count);
+
+        s.end();
+        return list;
     }
 
-    private static void phaseCalculateCollisions(List<Person> list) {
-        Phase ph = new Phase("CALCOL", "Calculate 'toString' collisions");
+    private static long phaseCalculateCollisions(List<Person> list) {
+        Stage s = new Stage("CALCOL", "Calculate 'toString' collisions");
         Map<String, Long> map = new HashMap<>();
 
         long totalCollisions = 0L;
@@ -107,43 +139,44 @@ public class LearningJava {
             }
             map.put(key, timesSeen + 1);
         }
-        System.out.println(String.format("Found %,d collisions.", totalCollisions));
-        ph.end();
+        s.info(String.format("Found %,d collisions.", totalCollisions));
+
+        s.end();
+        return totalCollisions;
     }
 
-    private static void phaseWriteCSV(List<Person> list, String filePath) throws IOException {
+    private static void phaseWriteText(List<Person> list, String fileName) {
+        Stage s = new Stage("WRTTXT", "Write records into text file");
 
+        try {
+            s.info("Writing into : " + fileName);
+            FileWriter fw = new FileWriter(fileName);
+            // TODO add some StopWatch ticker to show progress
+            for (Person p : list) {
+                fw.write(p.toString());
+                fw.write(System.lineSeparator());
+            }
+            fw.close();
+            s.info("Done writing.");
+        } catch (IOException e) {
+            LOG.error("Failed to write TXT file", e);
+        }
+
+        s.end();
     }
 
     public static void main(String[] args) throws UnsupportedEncodingException {
         RandomPersonGenerator rpg;
         List<Person> people;
 
-        try {
-            String encoding = System.getProperty("file.encoding", ENCODING_DEFAULT);
-            boolean autoFlush = true;
-            LOG.info("Set System.out encoding to " + encoding);
-            System.setOut(new PrintStream(System.out, autoFlush, encoding));
-            Chalk.setColorEnabled(true);
-        } catch (RuntimeException e) {
-            LOG.error("FUCK UP: ", e);  // lolwut
-        }
-
-        LOG.debug(
-                "Initiating startup sequence ..");
-        System.out.println(Chalk.on(
-                "SYSTEM BOOT Loading version 701.12 UPG").blue().bold());
-
+        phaseSystemInit();
         phaseSystemCheck();
 
         rpg = new RandomPersonGenerator(new Random(DEFAULT_SEED));
         LOG.debug("Generator: " + rpg);
 
         /* Generate 10 randoms */
-        people = phaseGen10(rpg);
-        for ( Person p : people ) {
-            System.out.println(p);
-        }
+        phaseGen10(rpg);
 
         /* Generate big bulk of randoms */
         people = phaseGetBulkList(rpg, BULK_COUNT);
@@ -152,10 +185,9 @@ public class LearningJava {
         phaseCalculateCollisions(people);
 
         /* Save bulk generated entries */
-        try {
-            phaseWriteCSV(people, "filename.csv");
-        } catch (IOException e) {
-            LOG.error("Failed to write CSV file", e);
-        }
+        String fileName = Paths.get("./target/filename.txt")
+                .toAbsolutePath().normalize().toString();
+        phaseWriteText(people, fileName);
+
     }
 }
