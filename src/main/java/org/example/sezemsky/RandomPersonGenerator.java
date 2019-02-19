@@ -1,5 +1,6 @@
 package org.example.sezemsky;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.List;
@@ -48,16 +49,26 @@ public class RandomPersonGenerator implements Runnable {
 
     public Person getRandomPerson() {
         // semi-random approach
-        int gender = random.nextInt(2); // genders: 0=male, 1=female
-        return new Person(
-                gender > 0
-                        ? getRandomName(FEMALE_NAMES_FIRST)
-                        : getRandomName(MALE_NAMES_FIRST),
-                gender > 0
-                        ? getRandomName(FEMALE_NAMES_LAST)
-                        : getRandomName(MALE_NAMES_LAST),
-                random.nextInt(MAX_AGE)
-        );
+        int gender = random.nextInt(2);
+
+        switch (gender) {  // 0=male, 1=female
+            case 0:
+                return new Person(
+                        Person.Gender.GENDER_M,
+                        LocalDate.now().minusYears(random.nextInt(MAX_AGE)),
+                        getRandomName(MALE_NAMES_FIRST),
+                        getRandomName(MALE_NAMES_LAST));
+
+            case 1:
+                return new Person(
+                        Person.Gender.GENDER_F,
+                        getRandomName(FEMALE_NAMES_FIRST),
+                        getRandomName(FEMALE_NAMES_LAST),
+                        random.nextInt(MAX_AGE)); // deprecated 'age' interface
+
+            default:
+                // no X's!
+        }
     }
 
     public List<Person> getBulk(long count) {
