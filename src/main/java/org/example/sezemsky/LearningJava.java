@@ -12,7 +12,10 @@ import com.github.tomaslanger.chalk.Chalk;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import javax.json.Json;
+import javax.json.JsonObject;
 
 public class LearningJava {
 
@@ -173,7 +176,13 @@ public class LearningJava {
             fw.write("{");  // hey.....
             fw.write(System.lineSeparator());
             for (int i = 0; i < people.size(); i++) {
-                fw.write(people.get(i).toString());
+                Person p = people.get(i);
+                JsonObject jo = Json.createObjectBuilder()
+                        .add("firstName", p.getFirstName())
+                        .add("lastName", p.getLastName())
+                        .add("birthDate", p.getBirthDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                        .build();
+                fw.write(jo.toString());
                 if (i < people.size() - 1) {
                     fw.write(","); // ...psst....
                     fw.write(System.lineSeparator());
