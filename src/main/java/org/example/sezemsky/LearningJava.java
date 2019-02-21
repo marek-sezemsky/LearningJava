@@ -24,18 +24,6 @@ public class LearningJava {
     private static final long BULK_COUNT = 500_000;
     private static final String ENCODING_DEFAULT = "UTF-8";
 
-    public LearningJava() {
-        try {
-            Chalk.setColorEnabled(true);
-            String encoding = System.getProperty("file.encoding", ENCODING_DEFAULT);
-            boolean autoFlush = true;
-            LOG.info("Set System.out encoding to " + encoding);
-            System.setOut(new PrintStream(System.out, autoFlush, encoding));
-        } catch (RuntimeException | UnsupportedEncodingException e) {
-            LOG.error("LOLWUT?!", e);
-        }
-    }
-
     static class Stage {
 
         private final String key;
@@ -78,6 +66,22 @@ public class LearningJava {
             System.out.println();
         }
 
+    }
+
+    private static void phaseSystemInit() {
+        Stage s = new Stage("BOOTUP", "System bootup sequence");
+
+        try {
+            Chalk.setColorEnabled(true);
+            String encoding = System.getProperty("file.encoding", ENCODING_DEFAULT);
+            boolean autoFlush = true;
+            s.info("Set System.out encoding to " + encoding);
+            System.setOut(new PrintStream(System.out, autoFlush, encoding));
+        } catch (RuntimeException | UnsupportedEncodingException e) {
+            s.error("LOLWUT?!", e);
+        }
+
+        s.end();
     }
 
     private static void phaseSystemCheck() {
@@ -198,6 +202,7 @@ public class LearningJava {
         RandomPersonGenerator rpg;
         List<Person> people;
 
+        phaseSystemInit();
         phaseSystemCheck();
 
         rpg = new RandomPersonGenerator(new Random(DEFAULT_SEED));
