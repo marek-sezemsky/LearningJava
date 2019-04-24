@@ -7,7 +7,7 @@ cache:
   directories:
   - $HOME/.m2
 
-script: "mvn test package exec:java site"
+script: "mvn test package install exec:java cobertura:cobertura"
 
 after_success:
   - ls -lh target/
