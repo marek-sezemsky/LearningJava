@@ -29,8 +29,10 @@ public class LearningJava {
 
     // TODO add some StopWatch ticker to show progress of slow operations
     private static final Logger LOG = LogManager.getLogger(LearningJava.class);
+
+    // TODO turn into command line arguments
     private static final long DEFAULT_SEED = 42;
-    private static final long BULK_COUNT = 10_000_000;
+    private static final long BULK_COUNT = 100_000;
     private static final String ENCODING_DEFAULT = "UTF-8";
 
     static class Stage {
@@ -194,7 +196,8 @@ public class LearningJava {
         s.end();
     }
 
-    private static void phaseWriteJSON(List<Person> people, String fileName) {
+    // @deprecated: slow as FUCK
+    @Deprecated private static void phaseWriteJSON(List<Person> people, String fileName) {
         Stage s = new Stage("WRTJSN", "Write records into JSON file");
 
         try (FileWriter fw = new FileWriter(fileName)) {
@@ -224,11 +227,14 @@ public class LearningJava {
         s.end();
     }
 
+    /* TODO seems to die on heap space for large populations, let's stick to poor man's JSON above.
+     */
     private static void phaseWriteGSON(List<Person> people, String fileName) {
-        Stage s = new Stage("WRTGSN", "Write records into JSON file - Gson");
+        Stage s = new Stage("WRTGSN", "Write records into GSON file (JSON via Gson)");
         Gson gson = new Gson();
 
         // JSON serialization
+        // TODO: should be fixed, somehow iterate over the people gson-way
         try (FileWriter fw = new FileWriter(fileName)) {
             s.info("Writing JSON into : " + fileName);
             fw.write(gson.toJson(people));
@@ -267,31 +273,32 @@ public class LearningJava {
         phaseWriteText(people, Paths.get("./target/filename.txt")
                 .toAbsolutePath().normalize().toString());
 
-        phaseWriteJSON(people, Paths.get("./target/filename.json")
+        /* DO NOT Write poor man's JSON */
+        // deprecated & commented out
+        // phaseWriteJSON(people, Paths.get("./target/filename.json")
+        //        .toAbsolutePath().normalize().toString());
+
+        /* Gson */
+        phaseWriteGSON(people, Paths.get("./target/filename.gson")
                 .toAbsolutePath().normalize().toString());
 
-        /* Math */
-        //Standard Internal Container Dimensions
-        //(20ft)	(40ft)
-        //Internal Height:	2.35m	2.35m
-        //End Door Aperture Width:	2.28m	2.28m
-        //End Door Aperture Height:	2.26m	2.26m
-        //Floor area	13.93m2	28.33m2
+        /* Some math:
+           Standard Internal Container Dimensions
+           (20ft)	(40ft)
+           Internal Height:	2.35m	2.35m
+           End Door Aperture Width:	2.28m	2.28m
+           End Door Aperture Height:	2.26m	2.26m
+           Floor area	13.93m2	28.33m2
+        */
         {
             float height = 2.35f;       // [m], 20ft variant
             float floorArea = 13.23f;   // [m^2]
             float volume = height * floorArea;
 
-            System.out.println(String.format("volume:[m^3]: %f", volume));
+            // System.out.println(String.format("volume:[m^3]: %f", volume));
         }
-
-        /* Gson */
-        phaseWriteGSON(people, Paths.get("./target/filename.json")
-                .toAbsolutePath().normalize().toString());
-        
-        /* . */
-        
 
     }
 
 }
+/* . */
