@@ -1,0 +1,8 @@
+language: java
+
+script: "mvn mvn clean test package exec:java site"
+
+after_success:
+  - ls -lh target/
+  - tar -cvf target.tar target/
+  - tar -tvf target.tar

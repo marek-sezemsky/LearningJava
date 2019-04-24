@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package person.sezemsky.marek.learning.java;
+package org.example.sezemsky;
 
 import java.util.List;
 import java.util.Random;
@@ -59,6 +59,7 @@ public class RandomPersonGeneratorTest {
         List<Person> list = rpg.getBulk(10);
         assertEquals(10, list.size());
         for ( Person p : list ) {
+            assertTrue(p instanceof Person);
             assertNotNull(p);
         }
     }

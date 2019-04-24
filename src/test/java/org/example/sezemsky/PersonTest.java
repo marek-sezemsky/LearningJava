@@ -1,5 +1,7 @@
-package person.sezemsky.marek.learning.java;
+package org.example.sezemsky;
 
+import java.time.LocalDate;
+import org.example.sezemsky.Person.Gender;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -27,12 +29,34 @@ public class PersonTest {
 
     @Before
     public void setUp() {
-        this.p = new Person("John", "Doe", 42);
+        this.p = new Person(Gender.GENDER_X, "John", "Doe", 42);
     }
 
     @After
     public void tearDown() {
         this.p = null;
+    }
+
+    /**
+     * Test of gender methods of class Person.
+     */
+    @Test
+    public void testGenders() {
+        assertEquals(Gender.GENDER_X, p.getGender());
+        assertEquals(Gender.GENDER_F, p.gender(Gender.GENDER_F).getGender());
+        assertEquals(Gender.GENDER_M, p.gender(Gender.GENDER_M).getGender());
+    }
+
+    /**
+     * Test of birthday methods of class Person.
+     */
+    @Test
+    public void testBirthDay() {
+        String F = "firstName";
+        String L = "lastName";
+        
+        Person tb = new Person().birthDate(LocalDate.now().minusYears(42));
+        assertEquals(42, (long) tb.getAge());  // @Deprecated
     }
 
     /**
@@ -64,8 +88,13 @@ public class PersonTest {
      */
     @Test
     public void testToString() {
-        String expResult = "Person{John Doe (42)}";
-        assertEquals(expResult, p.toString());
+        assertEquals("Person{John Doe (42)}", p.toString());
     }
 
+    @Test
+    public void testEquals() {
+        Person p1 = new Person("First name", "Last name", 42);
+        Person p2 = new Person("First name", "Last name", 42);
+        assertTrue(p1.equals(p2));
+    }
 }
