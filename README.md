@@ -5,3 +5,10 @@ Generátor náhodných lidí.
 ```
 mvn clean test package exec:java
 ```
+
+Prebundled with `Dockerfile`:
+
+```
+docker build -t learning-java .
+docker run -it learning-java
+```
