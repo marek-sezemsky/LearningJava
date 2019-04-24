@@ -9,19 +9,28 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.github.tomaslanger.chalk.Chalk;
+import com.google.gson.Gson;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javax.json.Json;
 import javax.json.JsonObject;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 public class LearningJava {
 
+    // TODO add some StopWatch ticker to show progress of slow operations
     private static final Logger LOG = LogManager.getLogger(LearningJava.class);
     private static final long DEFAULT_SEED = 42;
-    private static final long BULK_COUNT = 500_000;
+    private static final long BULK_COUNT = 10_000_000;
     private static final String ENCODING_DEFAULT = "UTF-8";
 
     static class Stage {
@@ -148,13 +157,31 @@ public class LearningJava {
         return totalCollisions;
     }
 
+    private static List<Person> phaseLoadCachedCSV(String fileName) {
+        Stage s = new Stage("RDRTXT", "Read lines from text file");
+        String line = null;
+        List<Person> ret = new ArrayList<Person>();
+
+        try (FileReader fr = new FileReader(fileName)) {
+            LineNumberReader lr = new LineNumberReader(fr);
+            s.info("Reading lines from : " + fileName);
+            while (null != (line = lr.readLine())) {
+                System.out.println(line);
+            }
+            s.info("Done reading.");
+        } catch (IOException e) {
+            LOG.error("Failed to read lines file", e);
+        }
+
+        s.end();
+        return ret;
+    }
+
     private static void phaseWriteText(List<Person> list, String fileName) {
         Stage s = new Stage("WRTTXT", "Write records into text file");
 
-        // TODO add some StopWatch ticker to show progress
         try (FileWriter fw = new FileWriter(fileName)) {
             s.info("Writing text into : " + fileName);
-            // TODO add some StopWatch ticker to show progress
             for (Person p : list) {
                 fw.write(p.toString());
                 fw.write(System.lineSeparator());
@@ -170,7 +197,6 @@ public class LearningJava {
     private static void phaseWriteJSON(List<Person> people, String fileName) {
         Stage s = new Stage("WRTJSN", "Write records into JSON file");
 
-        // TODO add some StopWatch ticker to show progress
         try (FileWriter fw = new FileWriter(fileName)) {
             s.info("Writing JSON into : " + fileName);
             fw.write("{");  // hey.....
@@ -198,6 +224,22 @@ public class LearningJava {
         s.end();
     }
 
+    private static void phaseWriteGSON(List<Person> people, String fileName) {
+        Stage s = new Stage("WRTGSN", "Write records into JSON file - Gson");
+        Gson gson = new Gson();
+
+        // JSON serialization
+        try (FileWriter fw = new FileWriter(fileName)) {
+            s.info("Writing JSON into : " + fileName);
+            fw.write(gson.toJson(people));
+            s.info("Done writing.");
+        } catch (IOException e) {
+            LOG.error("Failed to write JSON file", e);
+        }
+
+        s.end();
+    }
+
     public static void main(String[] args) throws UnsupportedEncodingException {
         RandomPersonGenerator rpg;
         List<Person> people;
@@ -211,8 +253,12 @@ public class LearningJava {
         /* Generate 10 randoms */
         phaseGen10(rpg);
 
-        /* Generate big bulk of randoms */
-        people = phaseGetBulkList(rpg, BULK_COUNT);
+        /* Load cached people or generate big bulk of randoms */
+        people = phaseLoadCachedCSV(Paths.get("./target.filename.csv")
+                .toAbsolutePath().normalize().toString());
+        if (people.size() == 0) {
+            people = phaseGetBulkList(rpg, BULK_COUNT);
+        }
 
         /* Calculate collisions in bulk generated randoms */
         phaseCalculateCollisions(people);
@@ -224,5 +270,28 @@ public class LearningJava {
         phaseWriteJSON(people, Paths.get("./target/filename.json")
                 .toAbsolutePath().normalize().toString());
 
+        /* Math */
+        //Standard Internal Container Dimensions
+        //(20ft)	(40ft)
+        //Internal Height:	2.35m	2.35m
+        //End Door Aperture Width:	2.28m	2.28m
+        //End Door Aperture Height:	2.26m	2.26m
+        //Floor area	13.93m2	28.33m2
+        {
+            float height = 2.35f;       // [m], 20ft variant
+            float floorArea = 13.23f;   // [m^2]
+            float volume = height * floorArea;
+
+            System.out.println(String.format("volume:[m^3]: %f", volume));
+        }
+
+        /* Gson */
+        phaseWriteGSON(people, Paths.get("./target/filename.json")
+                .toAbsolutePath().normalize().toString());
+        
+        /* . */
+        
+
     }
+
 }
