@@ -1,6 +1,6 @@
 language: java
 
-script: "mvn mvn clean test package exec:java site"
+script: "mvn test package exec:java site"
 
 after_success:
   - ls -lh target/
