@@ -1,9 +1,12 @@
 language: java
 
+services:
+    - docker
+
 cache:
   directories:
   - $HOME/.m2
-  
+
 script: "mvn test package exec:java site"
 
 after_success:
