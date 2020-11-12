@@ -7,6 +7,7 @@ package org.example.sezemsky;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -18,9 +19,10 @@ public class HelloFX extends Application {
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
         Label label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
+        Button button = new Button("Click Me");
         StackPane stack = new StackPane();
         
-        stack.getChildren().addAll(label);
+        stack.getChildren().addAll(button);
         Scene scene = new Scene(stack, 640, 480);
         
         stage.setScene(scene);
