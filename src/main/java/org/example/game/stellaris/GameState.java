@@ -1,9 +1,8 @@
-package org.example.game;
+package org.example.game.stellaris;
 
 import java.util.List;
 
 public class GameState {
-
     public GameStateHeader header;
     public List<Player> players;
     public List<Species> species;
@@ -47,5 +46,7 @@ public class GameState {
         random_name_database={
         name_list{
      */
-     // TODO Galaxy (+cont)
+     // TODO Galaxy (+cont...)
+    
+    
 }
